@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+websockets
+requests
+pandas
+numpy 
+bs4
+python-dotenv
+scipy
