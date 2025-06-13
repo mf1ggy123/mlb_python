@@ -46,6 +46,7 @@ async def select_teams(selection: TeamSelection):
     AWAY_TEAM = selection.away
     logging.info(f"Teams selected: Home={HOME_TEAM}, Away={AWAY_TEAM}")
     configureKal()
+    set_contracts()
     return {"success": True}
 
 def load_private_key_from_file(file_path):
@@ -56,6 +57,37 @@ def load_private_key_from_file(file_path):
             backend=default_backend()
         )
     return private_key
+
+def set_contracts():
+    global user_contracts, ticker_market, EXCHANGE_CLIENT
+
+    positions_params = {'limit': None,
+                        'cursor': None,
+                        'settlement_status': None,
+                        'ticker': ticker_market["home"],
+                        'event_ticker': None}
+
+    current_position = EXCHANGE_CLIENT.get_positions(**positions_params)
+    if len(current_position['market_positions']) > 0:
+        current_position = current_position['market_positions'][0]['position']
+    else:
+        current_position = 0
+    user_contracts["home"] = current_position
+
+    positions_params = {'limit': None,
+                        'cursor': None,
+                        'settlement_status': None,
+                        'ticker': ticker_market["away"],
+                        'event_ticker': None}
+
+    current_position = EXCHANGE_CLIENT.get_positions(**positions_params)
+    if len(current_position['market_positions']) > 0:
+        current_position = current_position['market_positions'][0]['position']
+    else:
+        current_position = 0
+    user_contracts["away"] = current_position
+    print(f"User contracts set: {user_contracts}")
+
 
 def configureKal():
     global EVENT_TICKER, EXCHANGE_CLIENT, AWAY_TEAM, HOME_TEAM, ticker_market 
