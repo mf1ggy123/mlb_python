@@ -171,8 +171,8 @@ async def websocket_action(websocket: WebSocket):
             if button == 1:
                 # Buy 1 contract on home team (yes side)
                 try:
+                    count = user_contracts["away"]
                     if count > 0:
-                        count = user_contracts["away"]
                         order_params = {
                             "ticker": ticker_market["away"],
                             "client_order_id": "frontend-away-sell",
