@@ -171,6 +171,25 @@ async def websocket_action(websocket: WebSocket):
             if button == 1:
                 # Buy 1 contract on home team (yes side)
                 try:
+                    if count > 0:
+                        order_params = {
+                            "ticker": ticker_market["away"],
+                            "client_order_id": "frontend-away-sell",
+                            "type": "market",
+                            "action": "sell",
+                            "side": "yes",
+                            "count": count,
+                            "yes_price": None,
+                            "no_price": None,
+                            "expiration_ts": None,
+                            "sell_position_floor": None,
+                            "buy_max_cost": None
+                        }
+                        order_result = EXCHANGE_CLIENT.create_order(**order_params)
+                        user_contracts["away"] = 0
+                        result = {"success": True, "action": "sell_away", "order_result": order_result}
+                    else:
+                        result = {"success": False, "error": "No away contracts to sell."}
                     order_params = {
                         "ticker": ticker_market["home"],
                         "client_order_id": "frontend-home-buy",
@@ -217,6 +236,26 @@ async def websocket_action(websocket: WebSocket):
             elif button == 3:
                 # Buy 1 contract on away team (yes side)
                 try:
+                    count = user_contracts["home"]
+                    if count > 0:
+                        order_params = {
+                            "ticker": ticker_market["home"],
+                            "client_order_id": "frontend-home-sell",
+                            "type": "market",
+                            "action": "sell",
+                            "side": "yes",
+                            "count": count,
+                            "yes_price": None,
+                            "no_price": None,
+                            "expiration_ts": None,
+                            "sell_position_floor": None,
+                            "buy_max_cost": None
+                        }
+                        order_result = EXCHANGE_CLIENT.create_order(**order_params)
+                        user_contracts["home"] = 0
+                        result = {"success": True, "action": "sell_home", "order_result": order_result}
+                    else:
+                        result = {"success": False, "error": "No home contracts to sell."}
                     order_params = {
                         "ticker": ticker_market["away"],
                         "client_order_id": "frontend-away-buy",
