@@ -141,7 +141,7 @@ async def websocket_endpoint(websocket: WebSocket):
                         await websocket.send_json(data)
                 except Exception as e:
                     logging.error(f"Error fetching or sending market data: {e}")
-            await asyncio.sleep(2)  # Send update every 2 seconds
+            await asyncio.sleep(30)  # Send update every 2 seconds
     except Exception as e:
         logging.error(f"WebSocket connection closed or error occurred: {e}")
 # ...existing imports and code...
